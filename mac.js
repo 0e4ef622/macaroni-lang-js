@@ -45,6 +45,7 @@ mac.operators = {
             }
             return new mac.Token(NUM, args[0].value + args[1].value);
         },
+        name: "add",
         arity: 2
     },
     "multiply": {
@@ -55,6 +56,7 @@ mac.operators = {
             }
             return new mac.Token(NUM, args[0].value * args[1].value);
         },
+        name: "multiply",
         arity: 2
     },
     "print": {
@@ -66,6 +68,7 @@ mac.operators = {
             console.log(args[0].value.to_s());
             return null;
         },
+        name: "print",
         arity: 1
     },
     "tobase": {
@@ -76,6 +79,7 @@ mac.operators = {
             }
             return new mac.Token(ARR, args[0].value.toString(args[1].value).to_a());
         },
+        name: "tobase",
         arity: 2
     },
     "set": {
@@ -84,6 +88,7 @@ mac.operators = {
             mac.vars[args[0].value] = val;
             return null;
         },
+        name: "set",
         arity: 2
     }
 }
@@ -152,7 +157,9 @@ mac.execute_op = function(i) {
     var args = [];
     while (args.length < t.value.arity) {
         var token = mac.program[++i];
-        if (token.type == OP) {
+        if (!token) {
+            mac.panic("Not enough arguments for operator " + t.value.name);
+        } else if (token.type == OP) {
             var ret = mac.execute_op(i);
             args.push(ret.val);
             i = ret.i;
