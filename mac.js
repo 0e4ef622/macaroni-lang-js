@@ -29,7 +29,7 @@ mac.Token = function(type, value) {
 mac.deref_vars = function(args) {
     return args.map(function(v) {
         if (v.type == VAR) {
-            if (!(v.value in mac.vars)) mac.panic("Undefined variable " + v);
+            if (!(v.value in mac.vars)) return mac.Token(NUM, 0);
             return mac.vars[v.value];
         }
         return v;
@@ -90,6 +90,28 @@ mac.operators = {
         },
         name: "set",
         arity: 2
+    },
+    "pow": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type != NUM && args[1].type != NUM) {
+                mac.panic("Called pow with Arr");
+            }
+            return new mac.Token(NUM, Math.pow(args[0].value, args[1].value));
+        },
+        name: "pow",
+        arity: 2
+    },
+    "floor": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type != NUM) {
+                mac.panic("Called floor with Arr");
+            }
+            return new mac.Token(NUM, Math.floor(args[0].value));
+        },
+        name: "floor",
+        arity: 1
     }
 }
 
