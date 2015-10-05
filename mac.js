@@ -29,7 +29,7 @@ mac.Token = function(type, value) {
 mac.deref_vars = function(args) {
     return args.map(function(v) {
         if (v.type == VAR) {
-            if (!(v.value in mac.vars)) return mac.Token(NUM, 0);
+            if (!(v.value in mac.vars)) return new mac.Token(NUM, 0);
             return mac.vars[v.value];
         }
         return v;
@@ -112,6 +112,13 @@ mac.operators = {
         },
         name: "floor",
         arity: 1
+    },
+    "rand": {
+        func: function() {
+            return new mac.Token(NUM, Math.random());
+        },
+        name: "rand",
+        arity: 0
     }
 }
 
