@@ -119,6 +119,17 @@ mac.operators = {
         },
         name: "rand",
         arity: 0
+    },
+    "length": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type != ARR) {
+                mac.panic("Called length with Num");
+            }
+            return new mac.Token(NUM, args[0].value.length);
+        },
+        name: "length",
+        arity: 1
     }
 }
 
