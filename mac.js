@@ -82,6 +82,17 @@ mac.operators = {
         name: "tobase",
         arity: 2
     },
+    "frombase": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type != ARR && args[1].type != NUM) {
+                mac.panic("frombase called with inappropriate types");
+            }
+            return new mac.Token(NUM, parseFloat(args[0].value.to_s(), args[1].value));
+        },
+        name: "frombase",
+        arity: 2
+    },
     "set": {
         func: function(args) {
             val = mac.deref_vars([args[1]])[0];
