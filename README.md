@@ -18,7 +18,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [ ] transpose
 - [ ] flatten
 - [x] frombase
-- [ ] wrap
+- [x] wrap
 - [ ] unwrap
 - [x] print
 - [ ] read

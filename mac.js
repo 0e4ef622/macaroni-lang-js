@@ -170,6 +170,13 @@ mac.operators = {
         },
         name: "time",
         arity: 0
+    },
+    "wrap": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            return new mac.Token(ARR, [args[0].value]);
+        }, name: "wrap",
+        arity: 1
     }
 }
 
