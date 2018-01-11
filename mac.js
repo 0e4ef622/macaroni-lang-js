@@ -10,8 +10,8 @@ var mac = {};
 mac.run = function(code) {
 
     mac.vars = {};
-    var tokens = mac.tokenize(code);
-    mac.program = tokens;
+    mac.currentTokenIndex = 0;
+    mac.program = mac.tokenize(code);
     mac.run_tokens();
 
 }
@@ -141,6 +141,28 @@ mac.operators = {
         },
         name: "length",
         arity: 1
+    },
+    "goto": {
+        func: function(args) {
+            if (args[0].type != VAR) {
+                mac.panic("Called goto with something weird");
+            } else if (!(args[0].value in mac.program.labels)) {
+                mac.panic("Invalid label");
+            }
+            mac.program.stack.push(mac.currentTokenIndex);
+            mac.currentTokenIndex = mac.program.labels[args[0].value];
+            return null;
+        },
+        name: "goto",
+        arity: 1
+    },
+    "return": {
+        func: function() {
+            if (mac.program.stack.length == 0) mac.panic("Stack underflow");
+            mac.currentTokenIndex = mac.program.stack.pop();
+        },
+        name: "return",
+        arity: 0
     }
 }
 
@@ -149,6 +171,7 @@ mac.panic = function(msg) {
 };
 
 mac.tokenize = function(code) {
+    var program = {tokens: [], labels: [], stack: []};
     var tokens = [];
     var token = "";
     for (var i=0; i < code.length; i++) {
@@ -175,48 +198,42 @@ mac.tokenize = function(code) {
 
     if (token) tokens.push(token);
 
-    tokens = tokens.map(function(token, i) {
-        if (token.split('').every(function(v, i) { return ('0' <= v && v <= '9') || (v == '-' && i == 0);})) {
-            return new mac.Token(NUM, +token);
-        } else if (token[0] == '"') {
-            return new mac.Token(ARR, token.slice(1,-1).to_a());
-        } else if (token in mac.operators) {
-            return new mac.Token(OP, mac.operators[token]);
-        } else {
-            return new mac.Token(VAR, token);
-        }
+    for (var i=0; i < tokens.length; i++) {
+        var token = tokens[i];
+        if (token.split('').every(function(v, i) { return ('0' <= v && v <= '9') || (v == '-' && i == 0);}))
+            program.tokens.push(new mac.Token(NUM, +token));
+        else if (token[0] == '"')        program.tokens.push(new mac.Token(ARR, token.slice(1,-1).to_a()));
+        else if (token in mac.operators) program.tokens.push(new mac.Token(OP, mac.operators[token]));
+        else if (token == "label")       program.labels[tokens[++i]] = program.tokens.length - 1;
+        else                             program.tokens.push(new mac.Token(VAR, token));
 
-    })
+    }
 
-    return tokens;
+    return program;
 };
 
 mac.run_tokens = function() {
-    for (var i = 0; i < mac.program.length; i++) {
-        if (mac.program[i].type == OP) {
-            var ret = mac.execute_op(i);
-            i = ret.i;
+    while (mac.currentTokenIndex < mac.program.tokens.length) {
+        if (mac.program.tokens[mac.currentTokenIndex].type == OP) {
+            mac.execute_op();
         }
+        mac.currentTokenIndex++;
     }
 }
 
-mac.execute_op = function(i) {
-    var t = mac.program[i];
+mac.execute_op = function() {
+    var t = mac.program.tokens[mac.currentTokenIndex];
+    if (t.type != OP) mac.panic("bro u dun goofed big time");
     var func = t.value.func;
     var arity = t.value.arity;
-    if (t.type != OP) mac.panic("bro u dun goofed big time");
     var args = [];
     while (args.length < t.value.arity) {
-        var token = mac.program[++i];
+        var token = mac.program.tokens[++mac.currentTokenIndex];
         if (!token) {
             mac.panic("Not enough arguments for operator " + t.value.name);
         } else if (token.type == OP) {
-            var ret = mac.execute_op(i);
-            args.push(ret.val);
-            i = ret.i;
-        } else
-            args.push(token);
+            args.push(mac.execute_op());
+        } else args.push(token);
     }
-    var result = func(args);
-    return {val:result, i:i};
+    return func(args);
 }
