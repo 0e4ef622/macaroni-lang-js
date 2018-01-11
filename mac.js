@@ -158,10 +158,17 @@ mac.operators = {
     },
     "return": {
         func: function() {
-            if (mac.program.stack.length == 0) mac.panic("Stack underflow");
+            if (mac.program.stack.length == 0) mac.currentTokenIndex = mac.program.tokens.length;
             mac.currentTokenIndex = mac.program.stack.pop();
         },
         name: "return",
+        arity: 0
+    },
+    "time": {
+        func: function() {
+            return new mac.Token(NUM, new Date() / 1000);
+        },
+        name: "time",
         arity: 0
     }
 }

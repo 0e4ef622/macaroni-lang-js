@@ -23,7 +23,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [x] print
 - [ ] read
 - [x] rand
-- [ ] time
+- [x] time NOTE: Due to limitations in JavaScript, this only returns millisecond precision as opposed to the nanosecond precision provided by KeyboardFire's implementation.
 - [x] set
 - [x] label
 - [x] goto
