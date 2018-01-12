@@ -197,6 +197,16 @@ mac.operators = {
         },
         name: "wrap",
         arity: 1
+    },
+    "concat": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type != ARR || args[1].type != ARR)
+                mac.panic("Called concat with Num");
+            return new mac.Token(ARR, args[0].value.concat(args[1].value));
+        },
+        name: "concat",
+        arity: 2
     }
 }
 

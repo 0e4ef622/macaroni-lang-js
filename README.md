@@ -9,7 +9,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [x] pow
 - [x] tobase
 - [ ] sort
-- [ ] concat
+- [x] concat
 - [ ] each
 - [ ] map
 - [ ] index
