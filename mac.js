@@ -3,6 +3,7 @@ String.prototype.to_a = function() {
 }
 
 Array.prototype.to_s = function() {
+    if (!this.every(function(v){return typeof v == "number"})) throw "Invalid string";
     return this.map(function(v){return String.fromCharCode(v)}).join('');
 }
 
