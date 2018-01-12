@@ -84,11 +84,30 @@ mac.operators = {
     },
     "frombase": {
         func: function(args) {
+
+            const DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             args = mac.deref_vars(args);
             if (args[0].type != ARR && args[1].type != NUM) {
                 mac.panic("frombase called with inappropriate types");
             }
-            return new mac.Token(NUM, parseFloat(args[0].value.to_s(), args[1].value));
+            var str = args[0].value; // actually an character array
+            var base = args[1].value;
+            // gonna basically copy keyboardfire but translate to js :P
+            var neg = str[0] == '-';
+            if (neg) str.shift();
+            var sub_pos = str.indexOf(46); // code for '.'
+            if (sub_pos == -1) sub_pos = str.length - 1;
+            else str.splice(--sub_pos, 1);
+
+            str = str.to_s(); // now its an actual string
+            var n = 0;
+            for (var i = 0; i < str.length; i++) {
+                let c = str[i].toUpperCase();
+                var digit = DIGITS.indexOf(c);
+                if (digit == -1) mac.panic("unrecognized digit " + c);
+                n += digit * Math.pow(base, sub_pos - i);
+            }
+            return new mac.Token(NUM, n);
         },
         name: "frombase",
         arity: 2
