@@ -175,7 +175,8 @@ mac.operators = {
         func: function(args) {
             args = mac.deref_vars(args);
             return new mac.Token(ARR, [args[0].value]);
-        }, name: "wrap",
+        },
+        name: "wrap",
         arity: 1
     }
 }
