@@ -19,7 +19,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [ ] flatten
 - [x] frombase
 - [x] wrap
-- [ ] unwrap
+- [x] unwrap
 - [x] print
 - [ ] read
 - [x] rand

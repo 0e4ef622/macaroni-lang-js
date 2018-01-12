@@ -198,6 +198,20 @@ mac.operators = {
         name: "wrap",
         arity: 1
     },
+    "unwrap": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type !== ARR) mac.panic("Called unwrap with Num");
+            else if (args[0].value.length !== 1) mac.panic("Called unwrap with Arr of length != 1");
+
+            var x = args[0].value[0];
+            if (typeof x == "number") return new mac.Token(NUM, x);
+            else if (x.constructor == Array) return new mac.Token(ARR, x);
+            else mac.panic("something went horribly wrong");
+        },
+        name: "unwrap",
+        arity: 1
+    },
     "concat": {
         func: function(args) {
             args = mac.deref_vars(args);
