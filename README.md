@@ -11,7 +11,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [ ] sort
 - [x] concat
 - [ ] each
-- [ ] map
+- [x] map
 - [x] index
 - [ ] slice
 - [x] length

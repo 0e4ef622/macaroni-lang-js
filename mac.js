@@ -240,6 +240,25 @@ mac.operators = {
         },
         name: "index",
         arity: 2
+    },
+    "map": {
+        func: function(args) {
+            var lbl = mac.get_label(args.pop()) + 1;
+            args = mac.deref_vars(args);
+            if (args[0].type != ARR) mac.panic("Called map with Num");
+            var arr = args[0].value;
+            var tokenIndex = mac.currentTokenIndex;
+            var stack = mac.program.stack;
+            return new mac.Token(ARR, arr.map(function(v) {
+                mac.program.stack = [];
+                mac.currentTokenIndex = lbl;
+                mac.vars['_'] = new mac.Token(typeof v === "number" ? NUM : ARR, v);
+                mac.run_tokens();
+                return mac.vars['_'].value;
+            }));
+        },
+        name: "map",
+        arity: 2
     }
 }
 
