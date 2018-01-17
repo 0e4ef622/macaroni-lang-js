@@ -164,13 +164,9 @@ mac.operators = {
     },
     "goto": {
         func: function(args) {
-            if (args[0].type !== VAR) {
-                mac.panic("Called goto with something weird");
-            } else if (!(args[0].value in mac.program.labels)) {
-                mac.panic("Invalid label");
-            }
+            var lbl = mac.get_label(args[0]);
             mac.program.stack.push(mac.currentTokenIndex);
-            mac.currentTokenIndex = mac.program.labels[args[0].value];
+            mac.currentTokenIndex = lbl;
             return null;
         },
         name: "goto",
@@ -223,6 +219,12 @@ mac.operators = {
         name: "concat",
         arity: 2
     }
+}
+
+mac.get_label = function(label) {
+    if (label.type !== VAR || !(label.value in mac.program.labels))
+        mac.panic("Invalid label");
+    return mac.program.labels[label.value];
 }
 
 mac.panic = function(msg) {
