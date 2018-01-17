@@ -12,7 +12,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [x] concat
 - [ ] each
 - [ ] map
-- [ ] index
+- [x] index
 - [ ] slice
 - [x] length
 - [ ] transpose

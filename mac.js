@@ -218,6 +218,28 @@ mac.operators = {
         },
         name: "concat",
         arity: 2
+    },
+    "index": {
+        func: function(args) {
+            var lbl = mac.get_label(args.pop()) + 1;
+            args = mac.deref_vars(args);
+            if (args[0].type != ARR) mac.panic("Called index with Num");
+            var arr = args[0].value;
+            var tokenIndex = mac.currentTokenIndex;
+            var stack = mac.program.stack;
+            var ret = [];
+            for (var i = 0; i < arr.length; i++) {
+                mac.program.stack = [];
+                mac.currentTokenIndex = lbl;
+                mac.vars['_'] = new mac.Token(typeof arr[i] === "number" ? NUM : ARR, arr[i]);
+                mac.run_tokens();
+                var x = mac.vars['_'];
+                if (x.type == ARR && x.value.length > 0 || x.type == NUM && x.value != 0) ret.push(i);
+            }
+            return new mac.Token(ARR, ret);
+        },
+        name: "index",
+        arity: 2
     }
 }
 
