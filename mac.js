@@ -259,6 +259,49 @@ mac.operators = {
         },
         name: "map",
         arity: 2
+    },
+    "slice": {
+        func: function(args) {
+            args = mac.deref_vars(args);
+            if (args[0].type !== ARR) mac.panic("Called slice with Num");
+            else if (args[1].type !== NUM || args[2].type !== NUM || args[3].type !== NUM) mac.panic("Called slice with Arr");
+
+            var step, rev;
+            if (args[3].value > 0) {
+                step = args[3].value;
+                rev = false;
+            } else {
+                step = -args[3].value;
+                rev = true;
+            }
+            var idx, to;
+
+            var a = args[0].value;
+            if (rev) {
+                idx = args[2].value;
+                to = args[1].value;
+                if (idx > a.length) idx = a.length;
+                else if (idx > 0) idx = -1;
+                else return new mac.Token(ARR, []);
+            } else {
+                idx = args[1].value;
+                to = args[2].value;
+            }
+
+            var new_arr = [];
+
+            while (rev ? idx >= to : idx < to) {
+                if (idx < a.length) new_arr.push(a[idx]);
+                else if (!rev) break;
+                if (rev) {
+                    if (step > idx) { break; }
+                    idx -= step;
+                } else idx += step;
+            }
+            return new mac.Token(ARR, new_arr);
+        },
+        name: "slice",
+        arity: 4
     }
 }
 

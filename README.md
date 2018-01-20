@@ -13,7 +13,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [ ] each
 - [x] map
 - [x] index
-- [ ] slice
+- [x] slice
 - [x] length
 - [ ] transpose
 - [ ] flatten
