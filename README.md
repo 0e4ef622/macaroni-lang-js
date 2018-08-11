@@ -8,7 +8,7 @@ An implementation of KeyboardFire's [macaroni-lang](https://github.com/KeyboardF
 - [x] floor
 - [x] pow
 - [x] tobase
-- [ ] sort
+- [x] sort
 - [x] concat
 - [ ] each
 - [x] map

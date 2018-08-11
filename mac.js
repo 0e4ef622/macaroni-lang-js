@@ -307,7 +307,32 @@ mac.operators = {
         },
         name: "slice",
         arity: 4
-    }
+    },
+    "sort": {
+        func: function(args) {
+            var lbl = mac.get_label(args.pop()) + 1;
+            args = mac.deref_vars(args);
+            if (args[0].type != ARR) mac.panic("Called sort with Num");
+            var arr = args[0].value.slice();
+            var tokenIndex = mac.currentTokenIndex;
+            var stack = mac.program.stack;
+            var result = new mac.Token(ARR, arr.sort(function(a, b) {
+                mac.program.stack = [];
+                mac.currentTokenIndex = lbl;
+                mac.vars['_'] = new mac.Token(ARR, [a, b]);
+                mac.run_tokens();
+                var value = mac.vars['_'];
+                if (value.type === ARR) mac.panic("sort predicate returned Arr");
+                return value.value;
+            }));
+            mac.program.stack = stack;
+            mac.currentTokenIndex = tokenIndex;
+            return result;
+        },
+        name: "map",
+        arity: 2
+    },
+
 }
 
 mac.get_label = function(label) {
