@@ -236,6 +236,8 @@ mac.operators = {
                 var x = mac.vars['_'];
                 if (x.type == ARR && x.value.length > 0 || x.type == NUM && x.value != 0) ret.push(i);
             }
+            mac.program.stack = stack;
+            mac.currentTokenIndex = tokenIndex;
             return new mac.Token(ARR, ret);
         },
         name: "index",
@@ -249,13 +251,16 @@ mac.operators = {
             var arr = args[0].value;
             var tokenIndex = mac.currentTokenIndex;
             var stack = mac.program.stack;
-            return new mac.Token(ARR, arr.map(function(v) {
+            var result = new mac.Token(ARR, arr.map(function(v) {
                 mac.program.stack = [];
                 mac.currentTokenIndex = lbl;
                 mac.vars['_'] = new mac.Token(typeof v === "number" ? NUM : ARR, v);
                 mac.run_tokens();
                 return mac.vars['_'].value;
             }));
+            mac.program.stack = stack;
+            mac.currentTokenIndex = tokenIndex;
+            return result;
         },
         name: "map",
         arity: 2
