@@ -94,11 +94,11 @@ mac.operators = {
             var str = args[0].value; // actually an character array
             var base = args[1].value;
             // gonna basically copy keyboardfire but translate to js :P
-            var neg = str[0] === '-';
+            var neg = str[0] === 45; // code for '-'
             if (neg) str.shift();
             var sub_pos = str.indexOf(46); // code for '.'
             if (sub_pos === -1) sub_pos = str.length - 1;
-            else str.splice(--sub_pos, 1);
+            else str.splice(sub_pos--, 1);
 
             str = str.to_s(); // now its an actual string
             var n = 0;
@@ -108,6 +108,7 @@ mac.operators = {
                 if (digit === -1) mac.panic("unrecognized digit " + c);
                 n += digit * Math.pow(base, sub_pos - i);
             }
+            if (neg) n = -n;
             return new mac.Token(NUM, n);
         },
         name: "frombase",
